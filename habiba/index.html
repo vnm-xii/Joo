@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Habiba | Future Engineer ✨</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Amiri:ital,wght@0,700;1,700&family=JetBrains+Mono:wght@400;700&display=swap');
+
+    :root {
+      --bg-deep: #05050a;
+      --bg-tech: #0b0f19;
+      --cyan: #00f2fe;
+      --magenta: #fe0979;
+      --glass: rgba(15, 20, 35, 0.65);
+      --glass-border: rgba(0, 242, 254, 0.25);
+      --text-main: #f0f4f8;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    html, body {
+      width: 100%; min-height: 100vh; min-height: 100dvh;
+      background: radial-gradient(circle at 50% 20%, var(--bg-tech) 0%, var(--bg-deep) 85%);
+      color: var(--text-main);
+      font-family: 'Tajawal', sans-serif;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* إضاءة خلفية سيبرانية ناعمة */
+    .ambient-light {
+      position: fixed; inset: 0; pointer-events: none; z-index: -1; overflow: hidden;
+    }
+    .orb {
+      position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.35;
+      animation: drift 12s ease-in-out infinite alternate;
+    }
+    .orb-cyan { width: 300px; height: 300px; background: var(--cyan); top: -50px; right: -50px; }
+    .orb-mag { width: 280px; height: 280px; background: var(--magenta); bottom: -50px; left: -50px; animation-delay: -4s; }
+    @keyframes drift {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(-20px, 30px) scale(1.1); }
+    }
+
+    .top-brand {
+      position: fixed; top: 22px; left: 0; right: 0; z-index: 100;
+      text-align: center; pointer-events: none;
+      font-family: 'JetBrains Mono', monospace; font-size: 1.1rem;
+      color: var(--cyan); letter-spacing: 2px; text-shadow: 0 0 10px var(--cyan);
+    }
+
+    /* نظام الفصول (شاشات منفصلة تماماً لضمان اللمس 100%) */
+    .screen {
+      display: none; width: 100%; max-width: 420px; padding: 20px;
+      flex-direction: column; align-items: center; justify-content: center; text-align: center;
+      animation: fadeIn 0.6s ease forwards;
+    }
+    .screen.active { display: flex; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+    .tag-label { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--magenta); letter-spacing: 2px; margin-bottom: 8px; }
+    .main-title { font-size: 1.85rem; font-weight: 800; color: #fff; margin-bottom: 10px; text-shadow: 0 2px 15px rgba(0,242,254,0.4); }
+    .sub-desc { color: var(--text-muted); font-size: 0.95rem; line-height: 1.7; margin-bottom: 25px; }
+
+    .btn-tech {
+      background: linear-gradient(135deg, var(--cyan), #007bb5); color: #05050a;
+      border: none; padding: 14px 35px; border-radius: 30px;
+      font-family: 'Tajawal', sans-serif; font-weight: 800; font-size: 1rem;
+      cursor: pointer; box-shadow: 0 8px 25px rgba(0, 242, 254, 0.35);
+      transition: transform 0.2s; margin-top: 15px; display: inline-block;
+    }
+    .btn-tech:active { transform: scale(0.95); }
+
+    /* ================= الفصل 1: التمرير للفتح (Swipe) ================= */
+    .swipe-zone {
+      position: relative; width: 100%; max-width: 320px; height: 180px;
+      background: rgba(0, 242, 254, 0.03); border: 1px dashed var(--glass-border);
+      border-radius: 24px; box-shadow: inset 0 0 20px rgba(0, 242, 254, 0.05);
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      touch-action: none; cursor: pointer; margin-bottom: 20px;
+    }
+    .swipe-icon { font-size: 2.2rem; animation: swipeAnim 1.5s ease-in-out infinite alternate; pointer-events: none; }
+    @keyframes swipeAnim { 0% { transform: translateX(-30px); } 100% { transform: translateX(30px); } }
+    .progress-bar { width: 65%; height: 5px; background: rgba(255,255,255,0.1); border-radius: 5px; margin-top: 20px; overflow: hidden; pointer-events: none; }
+    .progress-fill { width: 0%; height: 100%; background: linear-gradient(90deg, var(--cyan), var(--magenta)); transition: width 0.1s; }
+    
+    .fx-particle {
+      position: fixed; pointer-events: none; z-index: 9999; font-size: 1.2rem;
+      filter: drop-shadow(0 0 8px var(--cyan));
+    }
+
+    /* ================= الفصل 2: سجلات المهندس (ملاحظات) ================= */
+    .tech-card {
+      width: 100%; background: var(--glass); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+      border: 1px solid var(--glass-border); border-right: 4px solid var(--cyan);
+      border-radius: 24px; padding: 25px 20px; text-align: right; box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+    }
+    .med-top { display: flex; justify-content: space-between; color: var(--cyan); font-weight: 700; font-size: 0.9rem; margin-bottom: 15px; }
+    .med-text { font-size: 1.05rem; line-height: 1.85; color: var(--text-main); min-height: 110px; margin-bottom: 20px; }
+    .med-actions { display: flex; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; }
+    .btn-small { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 10px 18px; border-radius: 20px; font-family: 'Tajawal'; font-weight: 700; cursor: pointer; }
+
+    /* ================= الفصل 3: الصور القابلة للقلب ================= */
+    .polaroid-box { width: 280px; height: 330px; perspective: 1000px; margin: 0 auto 15px; cursor: pointer; }
+    .polaroid-flip { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.6s ease; }
+    .polaroid-flip.flipped { transform: rotateY(180deg); }
+    .pol-side { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 18px; box-shadow: 0 15px 35px rgba(0,0,0,0.6); }
+    .pol-front { background: #eef2f5; padding: 12px 12px 45px 12px; display: flex; flex-direction: column; justify-content: space-between; }
+    .pol-photo { width: 100%; height: 235px; border-radius: 10px; background-size: cover; background-position: center; background-color: #111; }
+    .pol-caption { color: #111; font-weight: 800; font-size: 0.9rem; margin-top: 10px; display: flex; justify-content: space-between; padding: 0 4px; }
+    .pol-back { background: linear-gradient(145deg, #161e31, #0b0f19); border: 1.5px solid var(--cyan); transform: rotateY(180deg); padding: 25px 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+    .pol-quote { font-size: 1.2rem; color: var(--cyan); line-height: 1.8; margin-bottom: 15px; font-weight: 500; }
+
+    .photo-nav { display: flex; gap: 15px; align-items: center; justify-content: center; margin-top: 10px; }
+    .photo-lock-msg { font-size: 0.85rem; color: var(--magenta); margin-top: 12px; font-weight: 700; }
+
+    /* ================= الفصل 4: الوعود (ترتيب إجباري) ================= */
+    .promises-list { display: flex; flex-direction: column; gap: 12px; width: 100%; margin-bottom: 15px; }
+    .wish-btn { width: 100%; background: var(--glass); border: 1px solid rgba(255,255,255,0.1); border-radius: 18px; padding: 16px; display: flex; align-items: center; gap: 14px; cursor: pointer; text-align: right; color: var(--text-muted); font-family: 'Tajawal'; font-size: 0.95rem; line-height: 1.6; transition: all 0.3s ease; }
+    .wish-btn.locked { opacity: 0.4; pointer-events: none; }
+    .wish-btn.lit { background: rgba(0, 242, 254, 0.08); border-color: var(--cyan); color: #fff; box-shadow: 0 0 20px rgba(0, 242, 254, 0.2); }
+    .star-icon { width: 38px; height: 38px; border-radius: 50%; background: rgba(255,255,255,0.08); display: flex; justify-content: center; align-items: center; font-size: 1.1rem; flex-shrink: 0; color: var(--cyan); }
+    .wish-btn.lit .star-icon { background: var(--cyan); color: #000; box-shadow: 0 0 15px var(--cyan); }
+    .wish-start { color: var(--cyan); font-weight: 800; margin-left: 5px; }
+
+    /* ================= الفصل 5: شعلة الطموح والمايكروفون ================= */
+    .flame-container { position: relative; width: 150px; height: 200px; margin: 0 auto 20px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; cursor: pointer; }
+    
+    .tech-pedestal { width: 100px; height: 35px; background: linear-gradient(90deg, #111, #333, #111); border-radius: 50% 50% 10px 10px; border-top: 3px solid var(--cyan); box-shadow: 0 10px 20px rgba(0,0,0,0.8); position: relative; z-index: 2; }
+    .tech-pedestal::after { content: ''; position: absolute; top: 12px; left: 20px; right: 20px; height: 2px; background: var(--cyan); box-shadow: 0 0 10px var(--cyan); }
+
+    .real-flame {
+      width: 26px; height: 58px;
+      background: radial-gradient(ellipse at 50% 75%, #ffffff 10%, #00f2fe 45%, #0066ff 80%, transparent 100%);
+      border-radius: 50% 50% 35% 35%;
+      box-shadow: 0 0 25px #00f2fe, 0 0 50px #0066ff;
+      position: relative; z-index: 5; margin-bottom: -10px;
+      transform-origin: 50% 90%; animation: flameFlicker 0.12s ease-in-out infinite alternate;
+      transition: all 0.4s ease;
+    }
+    .real-flame.out { opacity: 0; transform: scale(0) translateY(-20px); }
+    @keyframes flameFlicker { 0% { transform: rotate(-2deg) scaleY(0.95); } 100% { transform: rotate(2deg) scaleY(1.05); } }
+
+    .smoke-line {
+      position: absolute; top: 60px; width: 4px; height: 60px;
+      background: linear-gradient(to top, rgba(255,255,255,0.8), transparent);
+      border-radius: 50%; filter: blur(3px); opacity: 0; z-index: 6;
+    }
+    .smoke-line.rise { animation: smokeUp 2s ease-out forwards; }
+    @keyframes smokeUp { 0% { opacity: 0.8; transform: translateY(0) scaleX(1); } 100% { opacity: 0; transform: translateY(-60px) scaleX(3); } }
+
+    .mic-eq { display: flex; align-items: flex-end; justify-content: center; gap: 5px; height: 35px; margin-top: 15px; }
+    .mic-bar { width: 5px; height: 6px; border-radius: 3px; background: linear-gradient(to top, var(--cyan), var(--magenta)); box-shadow: 0 0 8px var(--cyan); transition: height 0.05s ease; }
+    .touch-warn { font-size: 0.8rem; color: var(--magenta); margin-top: 8px; opacity: 0; transition: opacity 0.3s; }
+
+    /* الرسالة الختامية */
+    .final-card {
+      display: none; width: 100%; background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--cyan); border-radius: 24px; padding: 25px;
+      box-shadow: 0 20px 50px rgba(0,242,254,0.15); text-align: right;
+    }
+    .final-head { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed rgba(0,242,254,0.3); padding-bottom: 12px; margin-bottom: 15px; }
+    .final-title { font-size: 1.4rem; font-weight: 800; color: var(--cyan); }
+    .final-body { font-size: 1.05rem; line-height: 1.9; color: var(--text-main); min-height: 120px; }
+  </style>
+</head>
+<body>
+
+  <audio id="bgAudio" loop preload="auto">
+    <source src="music.mp3" type="audio/mpeg">
+    <source src="https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0a13f69d2.mp3" type="audio/mpeg">
+  </audio>
+
+  <div class="ambient-light">
+    <div class="orb orb-cyan"></div>
+    <div class="orb orb-mag"></div>
+  </div>
+
+  <div class="top-brand">HABIBA_AI_V1.0</div>
+
+  <!-- ================= الفصل 1: التمرير للفتح ================= -->
+  <section class="screen active" id="sec1">
+    <div class="tag-label">SYSTEM INITIALIZING</div>
+    <h1 class="main-title">إلى حبيبة.. مهندسة قلبي</h1>
+    <p class="sub-desc" style="margin-bottom: 35px;">
+      مفاجأة بسيطة عشان متنسيش أبداً إني مؤمن بيكي.. حركي صباعك على الشاشة عشان تفتحي النظام.
+    </p>
+
+    <div class="swipe-zone" id="swipeArea">
+      <div class="swipe-icon">🚀</div>
+      <p style="font-size: 0.95rem; color: var(--cyan); margin-top: 15px; font-weight: 700; pointer-events: none;">
+        امسحي الشاشة للفتح ✨
+      </p>
+      <div class="progress-bar">
+        <div class="progress-fill" id="swipeFill"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= الفصل 2: سجلات المهندس (الملاحظات) ================= -->
+  <section class="screen" id="sec2">
+    <div class="tag-label">ENGINEERING LOGS</div>
+    <h2 class="main-title">خوارزميات الدعم الفني</h2>
+    <p class="sub-desc">4 حقائق متبرمجة في عقلي عشانك:</p>
+
+    <div class="tech-card">
+      <div>
+        <div class="med-top">
+          <span id="logTitle">السجل الأول ⚙️</span>
+          <span id="logCount">1 / 4</span>
+        </div>
+        <p class="med-text" id="logBody">
+          في هندسة الذكاء الاصطناعي بنعلم الآلة إزاي تفهم.. بس أنتِ من غير أي أكواد علمتيني إزاي أفهم يعني إيه سند حقيقي وروح حلوة.
+        </p>
+      </div>
+      <div class="med-actions">
+        <button class="btn-small" onclick="navLog(-1)">السابق</button>
+        <button class="btn-small" style="background:var(--cyan); color:#000; border:none;" id="nextLogBtn" onclick="navLog(1)">السجل التالي ←</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= الفصل 3: ألبوم الصور 3D ================= -->
+  <section class="screen" id="sec3">
+    <div class="tag-label">DATA ARCHIVE</div>
+    <h2 class="main-title">رحلتنا سوا 📸</h2>
+    <p class="sub-desc" style="margin-bottom: 10px;">
+      اضغطي على الصورة عشان <strong style="color:var(--cyan);">تقلبيها</strong> وتقرأي اللي متسجل وراها:
+    </p>
+
+    <div class="polaroid-box" onclick="flipCard()">
+      <div class="polaroid-flip" id="polCard">
+        <div class="pol-side pol-front">
+          <!-- الصورة بدون أي أيقونة كاميرا -->
+          <div class="pol-photo" id="polImg" style="background-image: url('photo1.jpg'), linear-gradient(135deg, #09203f, #537895);"></div>
+          <div class="pol-caption">
+            <span id="polTitle">اللقطة الأولى ✨</span>
+            <span style="font-size:0.75rem; color:#888;">اضغطي للقلب ↺</span>
+          </div>
+        </div>
+        <div class="pol-side pol-back">
+          <div style="color:var(--cyan); font-size:1.5rem; margin-bottom:10px;">❝</div>
+          <p class="pol-quote" id="polQuote">
+            طريقك من ثانوي فني لمعهد وبعدها هندسة.. ده مش طريق طويل، ده قصة كفاح لمهندسة أنا فخور بيها.
+          </p>
+          <span style="font-size:0.75rem; color:var(--text-muted);">رجوع ↻</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="photo-nav">
+      <button class="btn-small" onclick="navPhoto(-1)">→ السابقة</button>
+      <span id="photoNum" style="color:var(--cyan); font-weight:800; min-width:50px;">1 / 4</span>
+      <button class="btn-small" onclick="navPhoto(1)">التالية ←</button>
+    </div>
+
+    <div class="photo-lock-msg" id="photoLock">شوفي الـ 4 لقطات عشان تفتحي المرحلة الجاية (1/4)</div>
+    <button class="btn-tech" id="toPromisesBtn" style="display:none;" onclick="goToSec(4)">وعودي ليكي 🚀</button>
+  </section>
+
+  <!-- ================= الفصل 4: وعود الدعم (ترتيب إجباري) ================= -->
+  <section class="screen" id="sec4">
+    <div class="tag-label">CORE DIRECTIVES</div>
+    <h2 class="main-title">3 وعود متبرمجة في قلبي</h2>
+    <p class="sub-desc">المسى النجوم بالترتيب عشان تفعّلي الوعود:</p>
+
+    <div class="promises-list">
+      <div class="wish-btn" id="wish1" onclick="activatePromise(1)">
+        <span class="star-icon" id="star1">☆</span>
+        <span><span class="wish-start">أوعدك</span> أكون دايماً السند والضهر، وعمرك ما هتحسي في يوم إنك لوحدك في أي خطوة.</span>
+      </div>
+      <div class="wish-btn locked" id="wish2" onclick="activatePromise(2)">
+        <span class="star-icon" id="star2">☆</span>
+        <span><span class="wish-start">أوعدك</span> أفضل مؤمن بقدراتك 100%، متأكد إنك هتبقي أعظم باشمهندسة وهتحققي حلمك وحلمنا.</span>
+      </div>
+      <div class="wish-btn locked" id="wish3" onclick="activatePromise(3)">
+        <span class="star-icon" id="star3">☆</span>
+        <span><span class="wish-start">أوعدك</span> طريقنا اللي بداناه سوا هنكمله سوا، وفرحة تخرجنا وبناء حياتنا هتبقى أحلى من أي خيال.</span>
+      </div>
+    </div>
+
+    <button class="btn-tech" id="toFinalBtn" style="display:none;" onclick="goToSec(5)">تأكيد وبدء النظام ⚙️</button>
+  </section>
+
+  <!-- ================= الفصل 5: شعلة الطموح والمايكروفون ================= -->
+  <section class="screen" id="sec5">
+    <div id="flameStage">
+      <div class="tag-label">FINAL PROTOCOL</div>
+      <h2 class="main-title">شعلة طموحنا ✨</h2>
+      <p class="sub-desc">
+        انفخي في المايكروفون عشان الشعلة تنور طريقنا وتفتحي رسالتي الأخيرة ليكي!
+      </p>
+
+      <div class="flame-container" onclick="warnTouch()">
+        <div class="smoke-line" id="smokeFx"></div>
+        <div class="real-flame" id="mainFlame"></div>
+        <div class="tech-pedestal"></div>
+
+        <div class="mic-eq">
+          <div class="mic-bar"></div><div class="mic-bar"></div><div class="mic-bar"></div>
+          <div class="mic-bar"></div><div class="mic-bar"></div><div class="mic-bar"></div>
+          <div class="mic-bar"></div><div class="mic-bar"></div><div class="mic-bar"></div>
+        </div>
+        <div class="touch-warn" id="touchWarn">النظام بيستجيب للنفخ في المايكروفون بس 😄</div>
+      </div>
+    </div>
+
+    <div class="final-card" id="finalCard">
+      <div class="final-head">
+        <span class="final-title">إلى مهندسة قلبي ❤️</span>
+        <span style="color:var(--cyan); font-family:'JetBrains Mono';">v1.0.0</span>
+      </div>
+      <div class="final-body" id="finalTxt"></div>
+    </div>
+  </section>
+
+  <script>
+    // ================= 1. الصوتيات =================
+    const bgAudio = document.getElementById('bgAudio');
+    let isMusicOn = false;
+    let audioCtx = null;
+
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+    }
+
+    function playBgMusic() {
+      if (isMusicOn) return;
+      initAudio();
+      bgAudio.volume = 0.55;
+      bgAudio.play().then(() => { isMusicOn = true; }).catch(()=>{});
+    }
+
+    function playTechChime() {
+      initAudio();
+      if (!audioCtx) return;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(880, audioCtx.currentTime); // A5
+      osc.frequency.exponentialRampToValueAtTime(1760, audioCtx.currentTime + 0.1); // Slide up
+      gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.5);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.5);
+    }
+
+    function haptic(ms) { try { if (navigator.vibrate) navigator.vibrate(ms); } catch(e){} }
+
+    // ================= 2. التنقل بين الشاشات =================
+    function goToSec(num) {
+      haptic(30);
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById('sec' + num).classList.add('active');
+      if(num === 5) startMic();
+    }
+
+    // ================= 3. الفصل 1: التمرير السحري النظيف 100% Vanilla =================
+    const swipeArea = document.getElementById('swipeArea');
+    let unlocked = false;
+    let swipeProg = 0;
+    let isSwiping = false;
+    let lastPcl = 0;
+
+    function spawnIcon(x, y) {
+      const now = Date.now();
+      if (now - lastPcl < 45) return;
+      lastPcl = now;
+      const icons = ['❤️', '🌹', '🚀', '✨'];
+      const el = document.createElement('div');
+      el.className = 'fx-particle';
+      el.innerText = icons[Math.floor(Math.random() * icons.length)];
+      el.style.left = x + 'px';
+      el.style.top = y + 'px';
+      document.bod
