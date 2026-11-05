@@ -386,4 +386,188 @@
       el.innerText = icons[Math.floor(Math.random() * icons.length)];
       el.style.left = x + 'px';
       el.style.top = y + 'px';
-      document.bod
+      document.body.appendChild(el);
+      
+      const tx = (Math.random() - 0.5) * 80;
+      const ty = -30 - Math.random() * 50;
+      
+      el.style.transition = 'transform 0.8s ease-out, opacity 0.8s ease-out';
+      requestAnimationFrame(() => {
+        el.style.transform = `translate(${tx}px, ${ty}px) scale(1.3) rotate(${(Math.random()-0.5)*60}deg)`;
+        el.style.opacity = '0';
+      });
+      setTimeout(() => el.remove(), 850);
+    }
+
+    function handleSwipe(x, y) {
+      if (unlocked) return;
+      playBgMusic();
+      spawnIcon(x, y);
+      
+      swipeProg = Math.min(100, swipeProg + 4.5);
+      document.getElementById('swipeFill').style.width = swipeProg + '%';
+      
+      if (swipeProg >= 100) {
+        unlocked = true;
+        haptic(100);
+        playTechChime();
+        setTimeout(() => goToSec(2), 350);
+      }
+    }
+
+    swipeArea.addEventListener('touchstart', e => { if(!unlocked) { isSwiping = true; handleSwipe(e.touches[0].clientX, e.touches[0].clientY); } }, {passive:true});
+    swipeArea.addEventListener('touchmove', e => { if(!unlocked && isSwiping) handleSwipe(e.touches[0].clientX, e.touches[0].clientY); }, {passive:true});
+    swipeArea.addEventListener('touchend', () => isSwiping = false);
+    
+    swipeArea.addEventListener('mousedown', e => { if(!unlocked) { isSwiping = true; handleSwipe(e.clientX, e.clientY); } });
+    swipeArea.addEventListener('mousemove', e => { if(!unlocked && isSwiping) handleSwipe(e.clientX, e.clientY); });
+    window.addEventListener('mouseup', () => isSwiping = false);
+
+    // ================= 4. الفصل 2: سجلات المهندس =================
+    const logs = [
+      { t: "السجل الأول ⚙️", b: "في هندسة الذكاء الاصطناعي بنعلم الآلة إزاي تفهم.. بس أنتِ من غير أي أكواد علمتيني إزاي أفهم يعني إيه سند حقيقي وروح حلوة." },
+      { t: "الإمكانيات اللامحدودة 🚀", b: "طريقك من ثانوي فني لمعهد لسنتين وبعدها هندسة.. ده مش طريق طويل، ده خطة مهندسة شاطرة بتصنع قصة نجاح أنا مؤمن بيها 100%." },
+      { t: "الدعم الفني 🛡️", b: "مهما حسيتي بضغط أو إنك لوحدك، أنا هنا دايماً.. السيستم بتاعك اللي مش بيهنج، وضهرك في كل خطوة لحد ما نوصل لحلمنا سوا." },
+      { t: "النتيجة المؤكدة ✨", b: "أنا مهندس AI، وبقولك بناءً على كل المعطيات: حلمك في هندسة هيتحقق، وإحنا هنبقى أحلى باشمهندسين مع بعض." }
+    ];
+    let lIdx = 0;
+    function navLog(dir) {
+      haptic(20);
+      if (dir === 1 && lIdx === logs.length - 1) { goToSec(3); return; }
+      lIdx = Math.max(0, Math.min(logs.length - 1, lIdx + dir));
+      document.getElementById('logTitle').innerText = logs[lIdx].t;
+      document.getElementById('logCount').innerText = (lIdx + 1) + ' / 4';
+      document.getElementById('logBody').innerText = logs[lIdx].b;
+      document.getElementById('nextLogBtn').innerText = (lIdx === logs.length - 1) ? 'ألبوم الداتا 📸 ←' : 'السجل التالي ←';
+    }
+
+    // ================= 5. الفصل 3: الصور =================
+    const pics = [
+      { i: "url('photo1.jpg'), linear-gradient(135deg, #09203f, #537895)", t: "اللقطة الأولى ✨", q: "أول خطوة في رحلتنا.. اليوم اللي اتأكدت فيه إنك أحلى صدفة." },
+      { i: "url('photo2.jpg'), linear-gradient(135deg, #1f1c2c, #928dab)", t: "أحلى ضحكة ❤️", q: "ضحكتك دي هي الـ Source Code اللي بيظبط أي يوم ملخبط عندي." },
+      { i: "url('photo3.jpg'), linear-gradient(135deg, #3a1c71, #d76d77)", t: "خروجاتنا سوا ☕", q: "الوقت معاكي مبيتحسبش بالساعات، بيتحسب براحة البال والهدوء." },
+      { i: "url('photo4.jpg'), linear-gradient(135deg, #0f2027, #2c5364)", t: "مستقبلنا 🚀", q: "كل لقطة جاية هتكون وأنتِ باشمهندسة قد الدنيا وأنا فخور بيكي." }
+    ];
+    let pIdx = 0, pSeen = {0:true}, pTotal = 1;
+    function flipCard() { haptic(25); document.getElementById('polCard').classList.toggle('flipped'); }
+    function navPhoto(dir) {
+      haptic(20);
+      const c = document.getElementById('polCard');
+      c.classList.remove('flipped');
+      setTimeout(() => {
+        pIdx = (pIdx + dir + pics.length) % pics.length;
+        if (!pSeen[pIdx]) { pSeen[pIdx] = true; pTotal++; }
+        document.getElementById('polImg').style.backgroundImage = pics[pIdx].i;
+        document.getElementById('polTitle').innerText = pics[pIdx].t;
+        document.getElementById('polQuote').innerText = pics[pIdx].q;
+        document.getElementById('photoNum').innerText = (pIdx + 1) + ' / 4';
+        const msg = document.getElementById('photoLock');
+        msg.innerText = `شوفي الـ 4 لقطات عشان تفتحي المرحلة الجاية (${pTotal}/4)`;
+        if (pTotal >= 4) {
+          msg.style.display = 'none';
+          document.getElementById('toPromisesBtn').style.display = 'inline-block';
+        }
+      }, 180);
+    }
+
+    // ================= 6. الفصل 4: الوعود =================
+    let wActive = 0;
+    function activatePromise(n) {
+      if (n > wActive + 1) { haptic(20); return; }
+      if (n <= wActive) return;
+      wActive = n; haptic(40); playTechChime();
+      const b = document.getElementById('wish'+n);
+      b.classList.remove('locked'); b.classList.add('lit');
+      document.getElementById('star'+n).innerText = '★';
+      const nx = document.getElementById('wish'+(n+1));
+      if (nx) nx.classList.remove('locked');
+      if (wActive >= 3) document.getElementById('toFinalBtn').style.display = 'inline-block';
+    }
+
+    // ================= 7. الفصل 5: شعلة الطموح والمايكروفون =================
+    let fOut = false;
+    let fallback = false;
+
+    // ألعاب نارية (Confetti) بكود Vanilla نقي لا يحجب اللمس
+    function pureConfetti() {
+      const cols = ['#00f2fe', '#fe0979', '#ffffff', '#ffd166'];
+      for (let i = 0; i < 40; i++) {
+        const c = document.createElement('div');
+        c.className = 'fx-particle';
+        c.style.background = cols[Math.floor(Math.random() * cols.length)];
+        c.style.width = '8px'; c.style.height = '16px';
+        c.style.left = (5 + Math.random() * 90) + 'vw';
+        c.style.top = '-20px';
+        document.body.appendChild(c);
+        
+        requestAnimationFrame(() => {
+          c.style.transition = 'transform 2.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 2.5s';
+          c.style.transform = `translateY(110vh) rotate(${Math.random()*720}deg)`;
+          c.style.opacity = '0';
+        });
+        setTimeout(() => c.remove(), 2600);
+      }
+    }
+
+    function warnTouch() {
+      if (fOut) return;
+      if (fallback) { endSequence(); return; }
+      haptic(20);
+      document.getElementById('touchWarn').style.opacity = '1';
+      setTimeout(() => { document.getElementById('touchWarn').style.opacity = '0'; }, 2000);
+    }
+
+    const finalMsg = "حبيبة قلبي.. المفاجأة دي عشان بس أقولك إني دايماً هنا، إوعي تحسي في يوم إنك لوحدك. أنا متأكد إنك هتبقي أعظم مهندسة، وفخور بيكي من دلوقتي. بحبك يا أحلى باشمهندسة في الدنيا ❤️🤖";
+
+    function endSequence() {
+      if (fOut) return;
+      fOut = true; haptic([70, 50, 100]); playTechChime();
+      
+      document.getElementById('mainFlame').classList.add('out');
+      document.getElementById('smokeFx').classList.add('rise');
+      pureConfetti();
+      
+      setTimeout(() => {
+        document.getElementById('flameStage').style.display = 'none';
+        const cd = document.getElementById('finalCard');
+        cd.style.display = 'block';
+        let i = 0; const bx = document.getElementById('finalTxt');
+        function type() {
+          if (i < finalMsg.length) {
+            bx.innerHTML += finalMsg.charAt(i);
+            i++; setTimeout(type, 35);
+          }
+        }
+        type();
+      }, 1200);
+    }
+
+    function startMic() {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { fallback = true; return; }
+      navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+        const aCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const src = aCtx.createMediaStreamSource(stream);
+        const an = aCtx.createAnalyser();
+        an.fftSize = 128; src.connect(an);
+        const data = new Uint8Array(an.frequencyBinCount);
+        const bars = document.querySelectorAll('.mic-bar');
+        
+        function loop() {
+          if (fOut) return;
+          an.getByteFrequencyData(data);
+          let sum = 0;
+          bars.forEach((b, i) => { const v = data[i]||0; sum+=v; b.style.height = Math.max(6, (v/255)*35)+'px'; });
+          if ((sum/bars.length) > 38) {
+            endSequence();
+            stream.getTracks().forEach(t => t.stop());
+          } else { requestAnimationFrame(loop); }
+        }
+        loop();
+      }).catch(() => {
+        fallback = true;
+        document.getElementById('touchWarn').innerText = "✨ المايك مقفول.. المسي الشعلة عشان تطفيها";
+      });
+    }
+  </script>
+</body>
+</html>
